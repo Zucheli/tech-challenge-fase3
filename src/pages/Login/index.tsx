@@ -1,49 +1,57 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api/api";
+import {
+    Container,
+    Card,
+    Title,
+    Input,
+    Button,
+    Error,
+} from "./styles";
 
 export default function Login() {
     const navigate = useNavigate();
-
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
 
     const handleLogin = async () => {
         try {
-            const response = await api.post("/auth/login", {
+            const res = await api.post("/auth/login", {
                 username,
                 password,
             });
 
-            localStorage.setItem("token", response.data.token);
+            localStorage.setItem("token", res.data.token);
             navigate("/admin");
-        } catch (err) {
+        } catch {
             setError("Usuário ou senha inválidos");
         }
     };
 
     return (
-        <div>
-            <h1>Login</h1>
+        <Container>
+            <Card>
+                <Title>Login</Title>
 
-            <input
-                type="text"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-            />
+                <Input
+                    placeholder="Usuário"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                />
 
-            <input
-                type="password"
-                placeholder="Senha"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
+                <Input
+                    type="password"
+                    placeholder="Senha"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
 
-            {error && <p style={{ color: "red" }}>{error}</p>}
+                <Button onClick={handleLogin}>Entrar</Button>
 
-            <button onClick={handleLogin}>Entrar</button>
-        </div>
+                {error && <Error>{error}</Error>}
+            </Card>
+        </Container>
     );
 }

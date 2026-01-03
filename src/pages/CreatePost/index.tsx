@@ -1,6 +1,14 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { api } from "../../api/api";
+import { useNavigate } from "react-router-dom";
+import {
+    Container,
+    Title,
+    Form,
+    Input,
+    TextArea,
+    Button,
+} from "./styles";
 
 export default function CreatePost() {
     const navigate = useNavigate();
@@ -28,43 +36,33 @@ export default function CreatePost() {
     };
 
     return (
-        <div>
-            <h1>Criar novo post</h1>
+        <Container>
+            <Title>Criar Novo Post</Title>
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Título</label>
-                    <input
-                        type="text"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        required
-                    />
-                </div>
+            <Form onSubmit={handleSubmit}>
+                <Input
+                    placeholder="Título"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    required
+                />
 
-                <div>
-                    <label>Conteúdo</label>
-                    <textarea
-                        value={content}
-                        onChange={(e) => setContent(e.target.value)}
-                        required
-                    />
-                </div>
+                <TextArea
+                    placeholder="Conteúdo do post"
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    required
+                />
 
-                <div>
-                    <label>Autor</label>
-                    <input
-                        type="text"
-                        value={author}
-                        onChange={(e) => setAuthor(e.target.value)}
-                    />
-                </div>
+                <Input
+                    placeholder="Autor"
+                    value={author}
+                    onChange={(e) => setAuthor(e.target.value)}
+                    required
+                />
 
-                <button type="submit">Criar Post</button>
-                <button type="button" onClick={() => navigate("/admin")}>
-                    Cancelar
-                </button>
-            </form>
-        </div>
+                <Button type="submit">Salvar</Button>
+            </Form>
+        </Container>
     );
 }

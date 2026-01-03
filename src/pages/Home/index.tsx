@@ -19,7 +19,7 @@ export default function Home() {
     }
 
     return (
-        <div style={{ maxWidth: 800, margin: "0 auto" }}>
+        <div style={{ maxWidth: 800, margin: "0 auto", padding: "0 16px" }}>
             <h1>Posts</h1>
 
             {posts.length === 0 && <p>Nenhum post encontrado.</p>}

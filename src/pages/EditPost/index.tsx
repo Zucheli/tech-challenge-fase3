@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../../api/api";
+import {
+    Container,
+    Title,
+    Form,
+    Input,
+    TextArea,
+    Button,
+} from "./styles";
 
 export default function EditPost() {
     const { id } = useParams<{ id: string }>();
@@ -45,43 +53,30 @@ export default function EditPost() {
     };
 
     return (
-        <div>
-            <h1>Editar post</h1>
+        <Container>
+            <Title>Editar Post</Title>
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Título</label>
-                    <input
-                        type="text"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        required
-                    />
-                </div>
+            <Form onSubmit={handleSubmit}>
+                <Input
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    required
+                />
 
-                <div>
-                    <label>Conteúdo</label>
-                    <textarea
-                        value={content}
-                        onChange={(e) => setContent(e.target.value)}
-                        required
-                    />
-                </div>
+                <TextArea
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    required
+                />
 
-                <div>
-                    <label>Autor</label>
-                    <input
-                        type="text"
-                        value={author}
-                        onChange={(e) => setAuthor(e.target.value)}
-                    />
-                </div>
+                <Input
+                    value={author}
+                    onChange={(e) => setAuthor(e.target.value)}
+                    required
+                />
 
-                <button type="submit">Salvar alterações</button>
-                <button type="button" onClick={() => navigate("/admin")}>
-                    Cancelar
-                </button>
-            </form>
-        </div>
+                <Button type="submit">Atualizar</Button>
+            </Form>
+        </Container>
     );
 }

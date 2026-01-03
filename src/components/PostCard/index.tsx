@@ -1,18 +1,29 @@
+import { useNavigate } from "react-router-dom";
+import { Card, Title, ContentPreview, Footer, ReadMore } from "./styles";
 import type { Post } from "../../api/posts";
-import { Link } from "react-router-dom";
 
-interface Props {
+type Props = {
     post: Post;
-}
+};
 
 export default function PostCard({ post }: Props) {
+    const navigate = useNavigate();
+
     return (
-        <div style={{ border: "1px solid #ccc", padding: 16, marginBottom: 12 }}>
-            <h2>{post.title}</h2>
-            <p>{post.content.substring(0, 100)}...</p>
-            <small>Autor: {post.author}</small>
-            <br />
-            <Link to={`/posts/${post.id}`}>Ler mais</Link>
-        </div>
+        <Card>
+            <Title>{post.title}</Title>
+
+            <ContentPreview>
+                {post.content.slice(0, 120)}...
+            </ContentPreview>
+
+            <Footer>
+                <small>Autor: {post.author || "Anônimo"}</small>
+
+                <ReadMore onClick={() => navigate(`/posts/${post.id}`)}>
+                    Ler mais
+                </ReadMore>
+            </Footer>
+        </Card>
     );
 }

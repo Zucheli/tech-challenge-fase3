@@ -1,12 +1,21 @@
 import { useEffect, useState } from "react";
 import { api } from "../../api/api";
 import { useNavigate } from "react-router-dom";
+import {
+    Container,
+    Header,
+    Title,
+    CreateButton,
+    List,
+    ListItem,
+    PostTitle,
+    Actions,
+    ActionButton,
+} from "./styles";
 
 type Post = {
     id: number;
     title: string;
-    content: string;
-    author?: string;
 };
 
 export default function Admin() {
@@ -14,10 +23,6 @@ export default function Admin() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-
-        if (!token) return;
-
         api.get("/posts/all")
             .then((res) => setPosts(res.data))
             .catch(() => alert("Erro ao carregar posts"));
@@ -32,30 +37,38 @@ export default function Admin() {
     };
 
     return (
-        <div>
-            <h1>Administração de Posts</h1>
+        <Container>
+            <Header>
+                <Title>Administração de Posts</Title>
 
-            <button onClick={() => navigate("/create")}>
-                ➕ Criar novo post
-            </button>
+                <CreateButton onClick={() => navigate("/create")}>
+                    ➕ Criar novo post
+                </CreateButton>
+            </Header>
 
-            <ul>
+            <List>
                 {posts.map((post) => (
-                    <li key={post.id}>
-                        <strong>{post.title}</strong>
+                    <ListItem key={post.id}>
+                        <PostTitle>{post.title}</PostTitle>
 
-                        <div>
-                            <button onClick={() => navigate(`/edit/${post.id}`)}>
-                                ✏️ Editar
-                            </button>
+                        <Actions>
+                            <ActionButton
+                                onClick={() => navigate(`/edit/${post.id}`)}
+                                variant="edit"
+                            >
+                                Editar
+                            </ActionButton>
 
-                            <button onClick={() => handleDelete(post.id)}>
-                                🗑️ Deletar
-                            </button>
-                        </div>
-                    </li>
+                            <ActionButton
+                                onClick={() => handleDelete(post.id)}
+                                variant="delete"
+                            >
+                                Excluir
+                            </ActionButton>
+                        </Actions>
+                    </ListItem>
                 ))}
-            </ul>
-        </div>
+            </List>
+        </Container>
     );
 }

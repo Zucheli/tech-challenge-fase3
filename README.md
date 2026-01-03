@@ -170,8 +170,8 @@ O projeto é composto por **dois repositórios independentes**:
 
 ### 1️⃣ Suba o backend (Fase 2)
 ```bash
+git clone https://github.com/Zucheli/tech-challenge-fase2.git
 cd tech-challenge-fase2
-npm install
 docker-compose up -d
 npx prisma migrate dev
 npm run dev
@@ -184,7 +184,9 @@ http://localhost:3000
 
 ### 2️⃣ Suba o frontend (Fase 3)
 ```bash
+git clone https://github.com/Zucheli/tech-challenge-fase3.git
 cd tech-challenge-fase3
+npm install
 npm run dev
 ```
 

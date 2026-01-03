@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { api } from "../../api/api";
+import {
+    Container,
+    Title,
+    Author,
+    Content,
+    BackButton,
+} from "./styles";
 
 type Post = {
     id: number;
@@ -11,26 +18,34 @@ type Post = {
 
 export default function PostDetails() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [post, setPost] = useState<Post | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         api.get(`/posts/${id}`)
             .then((res) => setPost(res.data))
-            .catch(() => alert("Erro ao carregar post"))
             .finally(() => setLoading(false));
     }, [id]);
 
-    if (loading) return <p>Carregando...</p>;
-    if (!post) return <p>Post não encontrado</p>;
+    if (loading) {
+        return <p>Carregando post...</p>;
+    }
+
+    if (!post) {
+        return <p>Post não encontrado.</p>;
+    }
 
     return (
-        <div>
-            <h1>{post.title}</h1>
+        <Container>
+            <Title>{post.title}</Title>
+            <Author>Autor: {post.author || "Anônimo"}</Author>
 
-            {post.author && <p><strong>Autor:</strong> {post.author}</p>}
+            <Content>{post.content}</Content>
 
-            <p>{post.content}</p>
-        </div>
+            <BackButton onClick={() => navigate(-1)}>
+                ← Voltar
+            </BackButton>
+        </Container>
     );
 }
