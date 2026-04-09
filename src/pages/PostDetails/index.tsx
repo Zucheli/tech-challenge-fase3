@@ -6,7 +6,7 @@ import {
     Title,
     Author,
     Content,
-    BackButton,
+    BackButton, Actions, ActionButton
 } from "./styles";
 
 type Post = {
@@ -14,6 +14,16 @@ type Post = {
     title: string;
     content: string;
     author?: string;
+    type?: string;
+    subject?: string;
+
+    _count?: {
+        likes: number;
+        favorites: number;
+    };
+
+    likes?: { id: number }[];
+    favorites?: { id: number }[];
 };
 
 export default function PostDetails() {
@@ -22,19 +32,45 @@ export default function PostDetails() {
     const [post, setPost] = useState<Post | null>(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
+    const fetchPost = () => {
         api.get(`/posts/${id}`)
             .then((res) => setPost(res.data))
             .finally(() => setLoading(false));
+    };
+
+    useEffect(() => {
+        fetchPost();
     }, [id]);
 
-    if (loading) {
-        return <p>Carregando post...</p>;
-    }
+    const handleLike = async () => {
+        const token = localStorage.getItem("token");
 
-    if (!post) {
-        return <p>Post não encontrado.</p>;
-    }
+        if (!token) {
+            alert("Sem token, faz login de novo");
+            return;
+        }
+
+        await api.post(
+            `/posts/${post?.id}/like`,
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+    };
+
+    const handleFavorite = async () => {
+        await api.post(`/posts/${id}/favorite`);
+        fetchPost();
+    };
+
+    if (loading) return <p>Carregando post...</p>;
+    if (!post) return <p>Post não encontrado.</p>;
+
+    const isLiked = (post.likes?.length || 0) > 0;
+    const isFavorited = (post.favorites?.length || 0) > 0;
 
     return (
         <Container>
@@ -42,6 +78,19 @@ export default function PostDetails() {
             <Author>Autor: {post.author || "Anônimo"}</Author>
 
             <Content>{post.content}</Content>
+
+            <p><strong>Tipo:</strong> {post.type}</p>
+            <p><strong>Disciplina:</strong> {post.subject}</p>
+
+            <Actions>
+                <ActionButton active={isLiked} onClick={handleLike}>
+                    👍 {post._count?.likes || 0}
+                </ActionButton>
+
+                <ActionButton active={isFavorited} onClick={handleFavorite}>
+                    ⭐
+                </ActionButton>
+            </Actions>
 
             <BackButton onClick={() => navigate(-1)}>
                 ← Voltar

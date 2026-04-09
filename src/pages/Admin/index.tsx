@@ -23,7 +23,7 @@ export default function Admin() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        api.get("/posts/all")
+        api.get("/posts")
             .then((res) => setPosts(res.data))
             .catch(() => alert("Erro ao carregar posts"));
     }, []);

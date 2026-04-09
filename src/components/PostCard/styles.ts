@@ -52,3 +52,31 @@ export const ReadMore = styled.button`
     text-decoration: underline;
   }
 `;
+
+export const Actions = styled.div`
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+`;
+
+export const ActionButton = styled.button<{ active?: boolean }>`
+  border: 1px solid #ddd;
+  background-color: ${({ active }) => (active ? "#2c3e50" : "#fff")};
+  color: ${({ active }) => (active ? "#fff" : "#2c3e50")};
+
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #2c3e50;
+    color: #fff;
+  }
+`;

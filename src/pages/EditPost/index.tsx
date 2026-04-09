@@ -17,6 +17,8 @@ export default function EditPost() {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [author, setAuthor] = useState("");
+    const [type, setType] = useState("");
+    const [subject, setSubject] = useState("");
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -25,6 +27,8 @@ export default function EditPost() {
                 setTitle(response.data.title);
                 setContent(response.data.content);
                 setAuthor(response.data.author || "");
+                setType(response.data.type || "");
+                setSubject(response.data.subject || "");
             } catch (error) {
                 alert("Erro ao carregar post");
                 console.error(error);
@@ -42,6 +46,8 @@ export default function EditPost() {
                 title,
                 content,
                 author,
+                type,
+                subject
             });
 
             alert("Post atualizado com sucesso!");
@@ -74,6 +80,30 @@ export default function EditPost() {
                     onChange={(e) => setAuthor(e.target.value)}
                     required
                 />
+
+                <Input
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    required
+                />
+
+                <div style={{ display: "flex", gap: 10 }}>
+                    {["PROVA", "EXERCICIO", "RESUMO"].map((item) => (
+                        <button
+                            key={item}
+                            onClick={() => setType(item)}
+                            style={{
+                                padding: 8,
+                                borderRadius: 6,
+                                border: "1px solid #ccc",
+                                background: type === item ? "#1976d2" : "#fff",
+                                color: type === item ? "#fff" : "#000",
+                            }}
+                        >
+                            {item}
+                        </button>
+                    ))}
+                </div>
 
                 <Button type="submit">Atualizar</Button>
             </Form>

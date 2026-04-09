@@ -24,7 +24,14 @@ export default function Login() {
             });
 
             localStorage.setItem("token", res.data.token);
-            navigate("/admin");
+            localStorage.setItem("role", JSON.stringify(res.data.role)); // 👈 ESSENCIAL
+
+            // redirecionamento correto
+            if (res.data.user === "PROFESSOR") {
+                navigate("/admin");
+            } else {
+                navigate("/"); // ou /posts
+            }
         } catch {
             setError("Usuário ou senha inválidos");
         }

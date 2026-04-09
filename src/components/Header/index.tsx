@@ -11,6 +11,9 @@ import {
 export default function Header() {
     const navigate = useNavigate();
     const isAuthenticated = Boolean(localStorage.getItem("token"));
+    const rawRole = localStorage.getItem("role");
+    const role = rawRole ? rawRole.replace(/"/g, "") : null;
+    const isProfessor = role === "PROFESSOR";
 
     const handleLogout = () => {
         localStorage.removeItem("token");
@@ -33,12 +36,14 @@ export default function Header() {
 
                     {isAuthenticated && (
                         <>
-                            <Link to="/admin">
-                                <NavLink>Admin</NavLink>
-                            </Link>
+                            {isProfessor && (
+                                <Link to="/admin">
+                                    <NavLink>Admin</NavLink>
+                                </Link>
+                            )}
 
                             <LogoutButton onClick={handleLogout}>
-                                Logout
+                                Logout ({role})
                             </LogoutButton>
                         </>
                     )}
