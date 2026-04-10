@@ -24,13 +24,17 @@ export default function Login() {
             });
 
             localStorage.setItem("token", res.data.token);
-            localStorage.setItem("role", JSON.stringify(res.data.role)); // 👈 ESSENCIAL
+            localStorage.setItem("role", JSON.stringify(res.data.role));
+
+            // extrai userId do JWT sem biblioteca
+            const payload = JSON.parse(atob(res.data.token.split(".")[1]));
+            localStorage.setItem("userId", String(payload.id));
 
             // redirecionamento correto
-            if (res.data.user === "PROFESSOR") {
+            if (res.data.role === "PROFESSOR") {
                 navigate("/admin");
             } else {
-                navigate("/"); // ou /posts
+                navigate("/posts");
             }
         } catch {
             setError("Usuário ou senha inválidos");

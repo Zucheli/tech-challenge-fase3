@@ -1,12 +1,30 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { api } from "../../api/api";
+import { getComments, createComment, deleteComment } from "../../api/posts";
+import type { Comment } from "../../api/posts";
 import {
     Container,
     Title,
     Author,
     Content,
-    BackButton, Actions, ActionButton
+    BackButton,
+    Actions,
+    ActionButton,
+    FavoriteButton,
+    CountLabel,
+    Divider,
+    CommentsSection,
+    CommentsSectionTitle,
+    CommentCard,
+    CommentHeader,
+    CommentMeta,
+    CommentAuthor,
+    CommentContent,
+    DeleteCommentButton,
+    CommentForm,
+    CommentInput,
+    CommentSubmitButton,
 } from "./styles";
 
 type Post = {
@@ -22,8 +40,8 @@ type Post = {
         favorites: number;
     };
 
-    likes?: { id: number }[];
-    favorites?: { id: number }[];
+    likes?: { userId: number }[];
+    favorites?: { userId: number }[];
 };
 
 export default function PostDetails() {
@@ -31,6 +49,13 @@ export default function PostDetails() {
     const navigate = useNavigate();
     const [post, setPost] = useState<Post | null>(null);
     const [loading, setLoading] = useState(true);
+    const [comments, setComments] = useState<Comment[]>([]);
+    const [commentText, setCommentText] = useState("");
+    const [submitting, setSubmitting] = useState(false);
+    const role = JSON.parse(localStorage.getItem("role") || '"ALUNO"') as string;
+    const isProfessor = role === "PROFESSOR";
+    const currentUserId = Number(localStorage.getItem("userId"));
+    const isLoggedIn = Boolean(localStorage.getItem("token"));
 
     const fetchPost = () => {
         api.get(`/posts/${id}`)
@@ -38,8 +63,13 @@ export default function PostDetails() {
             .finally(() => setLoading(false));
     };
 
+    const fetchComments = () => {
+        getComments(Number(id)).then((res) => setComments(res.data));
+    };
+
     useEffect(() => {
         fetchPost();
+        fetchComments();
     }, [id]);
 
     const handleLike = async () => {
@@ -59,6 +89,7 @@ export default function PostDetails() {
                 },
             }
         );
+        fetchPost();
     };
 
     const handleFavorite = async () => {
@@ -66,11 +97,29 @@ export default function PostDetails() {
         fetchPost();
     };
 
+    const handleSubmitComment = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!commentText.trim()) return;
+        setSubmitting(true);
+        try {
+            await createComment(Number(id), commentText.trim());
+            setCommentText("");
+            fetchComments();
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const handleDeleteComment = async (commentId: number) => {
+        await deleteComment(Number(id), commentId);
+        fetchComments();
+    };
+
     if (loading) return <p>Carregando post...</p>;
     if (!post) return <p>Post não encontrado.</p>;
 
-    const isLiked = (post.likes?.length || 0) > 0;
-    const isFavorited = (post.favorites?.length || 0) > 0;
+    const isLiked = post.likes?.some((l) => l.userId === currentUserId) ?? false;
+    const isFavorited = post.favorites?.some((f) => f.userId === currentUserId) ?? false;
 
     return (
         <Container>
@@ -83,18 +132,77 @@ export default function PostDetails() {
             <p><strong>Disciplina:</strong> {post.subject}</p>
 
             <Actions>
-                <ActionButton active={isLiked} onClick={handleLike}>
-                    👍 {post._count?.likes || 0}
-                </ActionButton>
-
-                <ActionButton active={isFavorited} onClick={handleFavorite}>
-                    ⭐
-                </ActionButton>
+                {isProfessor ? (
+                    <>
+                        <CountLabel>👍 {post._count?.likes ?? post.likes?.length ?? 0}</CountLabel>
+                        <CountLabel>⭐ {post._count?.favorites ?? post.favorites?.length ?? 0}</CountLabel>
+                    </>
+                ) : (
+                    <>
+                        <ActionButton active={isLiked} onClick={handleLike}>
+                            👍
+                        </ActionButton>
+                        <FavoriteButton active={isFavorited} onClick={handleFavorite}>
+                            ⭐
+                        </FavoriteButton>
+                    </>
+                )}
             </Actions>
 
             <BackButton onClick={() => navigate(-1)}>
                 ← Voltar
             </BackButton>
+
+            <Divider />
+
+            <CommentsSection>
+                <CommentsSectionTitle>
+                    Comentários ({comments.length})
+                </CommentsSectionTitle>
+
+                {isLoggedIn && (
+                    <CommentForm onSubmit={handleSubmitComment}>
+                        <CommentInput
+                            placeholder="Escreva um comentário..."
+                            value={commentText}
+                            onChange={(e) => setCommentText(e.target.value)}
+                        />
+                        <CommentSubmitButton type="submit" disabled={submitting || !commentText.trim()}>
+                            Comentar
+                        </CommentSubmitButton>
+                    </CommentForm>
+                )}
+
+                {comments.length === 0 && (
+                    <p style={{ color: "#999", fontSize: "0.9rem" }}>Nenhum comentário ainda.</p>
+                )}
+
+                {comments.map((comment) => (
+                    <CommentCard key={comment.id}>
+                        <CommentHeader>
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                <CommentAuthor>{comment.user.username}</CommentAuthor>
+                                <CommentMeta>· {comment.user.role}</CommentMeta>
+                            </div>
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                <CommentMeta>
+                                    {new Date(comment.createdAt).toLocaleDateString("pt-BR", {
+                                        day: "2-digit",
+                                        month: "short",
+                                        year: "numeric",
+                                    })}
+                                </CommentMeta>
+                                {(isProfessor || comment.userId === currentUserId) && (
+                                    <DeleteCommentButton onClick={() => handleDeleteComment(comment.id)}>
+                                        Excluir
+                                    </DeleteCommentButton>
+                                )}
+                            </div>
+                        </CommentHeader>
+                        <CommentContent>{comment.content}</CommentContent>
+                    </CommentCard>
+                ))}
+            </CommentsSection>
         </Container>
     );
 }

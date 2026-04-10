@@ -23,7 +23,7 @@ export default function Header() {
     return (
         <HeaderWrapper>
             <HeaderContent>
-                <Title onClick={() => navigate("/")}>
+                <Title onClick={() => navigate("/posts")}>
                     Tech Challenge
                 </Title>
 

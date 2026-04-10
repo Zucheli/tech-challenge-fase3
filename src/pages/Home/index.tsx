@@ -3,10 +3,13 @@ import { getPosts, searchPosts } from "../../api/posts";
 import {
     FilterContainer,
     FilterRow,
+    FilterLabel,
+    Divider,
     Input,
     Select,
     Button,
-    ClearButton
+    ClearButton,
+    ToggleButton
 } from "./styles";
 import type { Post } from "../../api/posts";
 import PostCard from "../../components/PostCard";
@@ -14,27 +17,29 @@ import PostCard from "../../components/PostCard";
 export default function Home() {
     const [posts, setPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState(true);
+    const role = JSON.parse(localStorage.getItem("role") || '"ALUNO"') as string;
+    const isAluno = role === "ALUNO";
 
-    // 🔍 novos estados
     const [query, setQuery] = useState("");
     const [subject, setSubject] = useState("");
     const [type, setType] = useState("");
+    const [liked, setLiked] = useState(false);
+    const [favorited, setFavorited] = useState(false);
 
-    // 🚀 função de busca
     const fetchPosts = async () => {
         setLoading(true);
 
         try {
-            // se tiver filtro → usa search
-            if (query || subject || type) {
+            if (query || subject || type || liked || favorited) {
                 const res = await searchPosts({
                     query,
                     subject,
                     type,
+                    ...(liked && { liked: true }),
+                    ...(favorited && { favorited: true }),
                 });
                 setPosts(res.data);
             } else {
-                // sem filtro → lista normal
                 const res = await getPosts();
                 setPosts(res);
             }
@@ -49,8 +54,8 @@ export default function Home() {
         setQuery("");
         setSubject("");
         setType("");
-
-        // opcional: já recarrega tudo
+        setLiked(false);
+        setFavorited(false);
         getPosts().then(setPosts);
     };
 
@@ -70,32 +75,49 @@ export default function Home() {
             <h1>Posts</h1>
 
             <FilterContainer>
+                {/* linha 1: busca por texto e disciplina */}
                 <FilterRow>
                     <Input
-                        placeholder="Buscar..."
+                        placeholder="🔍  Buscar por título ou conteúdo..."
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                     />
-
                     <Input
                         placeholder="Disciplina"
                         value={subject}
                         onChange={(e) => setSubject(e.target.value)}
                     />
+                </FilterRow>
 
+                <Divider />
+
+                {/* linha 2: tipo + toggles de aluno + ações */}
+                <FilterRow>
+                    <FilterLabel>Tipo:</FilterLabel>
                     <Select
                         value={type}
                         onChange={(e) => setType(e.target.value)}
                     >
                         <option value="">Todos</option>
                         <option value="PROVA">Prova</option>
-                        <option value="EXERCICIO">Exercicio</option>
+                        <option value="EXERCICIO">Exercício</option>
                         <option value="RESUMO">Resumo</option>
                     </Select>
 
-                    <div style={{ display: "flex", gap: "8px" }}>
-                        <Button onClick={fetchPosts}>Buscar</Button>
+                    {isAluno && (
+                        <>
+                            <ToggleButton active={liked} onClick={() => setLiked((v) => !v)}>
+                                👍 Curtidos
+                            </ToggleButton>
+                            <ToggleButton active={favorited} onClick={() => setFavorited((v) => !v)}>
+                                ⭐ Favoritos
+                            </ToggleButton>
+                        </>
+                    )}
+
+                    <div style={{ marginLeft: "auto", display: "flex", gap: "8px" }}>
                         <ClearButton onClick={clearFilters}>Limpar</ClearButton>
+                        <Button onClick={fetchPosts}>Buscar</Button>
                     </div>
                 </FilterRow>
             </FilterContainer>
@@ -103,7 +125,7 @@ export default function Home() {
             {posts.length === 0 && <p>Nenhum post encontrado.</p>}
 
             {posts.map((post) => (
-                <PostCard post={post} refreshPosts={fetchPosts} />
+                <PostCard key={post.id} post={post} refreshPosts={fetchPosts} />
             ))}
         </div>
     );

@@ -1,58 +1,69 @@
-# 🧠 Tech Challenge – Fase 3
+# Tech Challenge – Fase 3
 **Pós-graduação FIAP – Full Stack Development**
 
-Projeto desenvolvido por **Mateus Zucheli** como entrega da **Fase 3** do Tech Challenge da FIAP, com foco em **React, Vite, TypeScript, consumo de API REST, autenticação e navegação protegida**.
+Projeto desenvolvido por **Mateus Zucheli** como entrega da **Fase 3** do Tech Challenge da FIAP, com foco em **React, Vite, TypeScript, consumo de API REST, autenticação JWT e controle de acesso por perfil de usuário**.
 
 ---
 
-## 🚀 Descrição do Projeto
+## Descrição do Projeto
 
-Este projeto consiste no frontend da aplicação de gerenciamento de postagens, consumindo a API desenvolvida na Fase 2.
+Frontend da aplicação de gerenciamento de postagens educacionais, consumindo a API desenvolvida na Fase 2. A aplicação possui comportamentos distintos conforme o perfil do usuário autenticado.
 
-A aplicação permite:
+### Role: ALUNO
+- Visualiza a lista de posts e o detalhe de cada post
+- Filtra posts por texto, disciplina e tipo
+- Filtra posts que curtiu ou que favoritou
+- Dá like e favorita posts (toggle — clica de novo para desfazer)
+- Vê o estado visual do botão de like (azul) e favorito (dourado) quando já interagiu
+- Não vê a contagem numérica de likes e favoritos
 
-- 🎓 **Usuários públicos (alunos):**
-  + visualizar a lista de posts
-  + acessar o detalhe de cada post
-
-- 👨‍🏫 **Usuários autenticados (professores):**
-  + realizar login
-  + acessar área administrativa
-  + criar, editar e excluir posts
-  + realizar logout
-
-O foco desta fase está em componentização, navegação, consumo de API, controle de autenticação e experiência do usuário.
-
----
-
-## 🧰 Tecnologias Utilizadas
-
-- ⚛️ **React**
-- ⚡ **Vite**
-- 🟦 **TypeScript**
-- 🌐 **React Router DOM**
-- 🔗 **Axios**
-- 💾 **LocalStorage (JWT)**
-- 🎨 **CSS inline / organização por componentes**
+### Role: PROFESSOR
+- Realiza login e acessa a área administrativa
+- Visualiza a lista de posts e o detalhe de cada post
+- Filtra posts por texto, disciplina e tipo
+- Vê a contagem numérica de likes e favoritos de cada post
+- Não pode dar like nem favoritar
+- Cria, edita e exclui posts
+- Realiza logout
 
 ---
 
-## 🧩 Estrutura do Projeto
+## Tecnologias Utilizadas
+
+- React 19
+- Vite
+- TypeScript
+- React Router DOM v7
+- Axios
+- Styled Components
+- LocalStorage para persistência de token JWT, role e userId
+
+---
+
+## Estrutura do Projeto
+
 ```
 tech-challenge-fase3/
 │
 ├── src/
-│   ├── api/              # Configuração do Axios e chamadas à API
-│   ├── components/       # Componentes reutilizáveis (Header, PostCard)
-│   ├── pages/            # Páginas da aplicação
-│   │   ├── Home
-│   │   ├── PostDetails
-│   │   ├── Login
-│   │   ├── Admin
-│   │   ├── CreatePost
-│   │   └── EditPost
-│   ├── routes/           # Rotas públicas e privadas
-│   ├── styles/           # Estilos globais
+│   ├── api/
+│   │   ├── api.ts          # Instância do Axios com interceptor de token
+│   │   └── posts.ts        # Funções de listagem e busca de posts
+│   ├── components/
+│   │   ├── Header/         # Header com navegação e logout
+│   │   └── PostCard/       # Card de post com like/favorito por role
+│   ├── pages/
+│   │   ├── Home/           # Listagem com filtros e toggles de curtidos/favoritos
+│   │   ├── PostDetails/    # Detalhe do post com like/favorito por role
+│   │   ├── Login/          # Autenticação e extração do userId do JWT
+│   │   ├── Admin/          # Área administrativa (somente PROFESSOR)
+│   │   ├── CreatePost/     # Criação de post (somente PROFESSOR)
+│   │   └── EditPost/       # Edição de post (somente PROFESSOR)
+│   ├── routes/
+│   │   ├── AppRoutes.tsx   # Definição de rotas públicas e protegidas
+│   │   └── PrivateRoute.tsx
+│   ├── styles/
+│   │   └── GlobalStyles.ts
 │   ├── App.tsx
 │   └── main.tsx
 │
@@ -64,18 +75,20 @@ tech-challenge-fase3/
 
 ---
 
-## 🧭 Navegação da Aplicação
-- 🌍 **Rotas Públicas**
-  + `/` → Home (lista de posts)
-  + `/posts/:id` → Detalhe do post
-  + `/login` → Login
+## Navegação da Aplicação
 
-- 🔒 **Rotas Protegidas**
-  + `/admin` → Área administrativa
-  + `/create` → Criar post
-  + `/edit/:id` → Editar post
+**Rotas Públicas**
+- `/` → redireciona para `/login`
+- `/login` → tela de login
+- `/posts` → listagem de posts
+- `/posts/:id` → detalhe do post
 
-O acesso às rotas protegidas é controlado por um PrivateRoute, que valida a presença do token JWT no localStorage.
+**Rotas Protegidas** (exigem token JWT)
+- `/admin` → área administrativa
+- `/create` → criar post
+- `/edit/:id` → editar post
+
+O acesso às rotas protegidas é controlado por `PrivateRoute`, que valida a presença do token JWT no localStorage.
 
 ---
 

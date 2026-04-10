@@ -60,13 +60,15 @@ export const Actions = styled.div`
 `;
 
 export const ActionButton = styled.button<{ active?: boolean }>`
-  border: 1px solid #ddd;
-  background-color: ${({ active }) => (active ? "#2c3e50" : "#fff")};
-  color: ${({ active }) => (active ? "#fff" : "#2c3e50")};
+  border: 2px solid ${({ active }) => (active ? "#1877f2" : "#ddd")};
+  background-color: ${({ active }) => (active ? "#e7f0fd" : "#fff")};
+  color: ${({ active }) => (active ? "#1877f2" : "#2c3e50")};
+  font-weight: ${({ active }) => (active ? "700" : "400")};
+  box-shadow: ${({ active }) => (active ? "0 0 0 3px rgba(24,119,242,0.15)" : "none")};
 
   padding: 6px 10px;
   border-radius: 6px;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   cursor: pointer;
 
   display: flex;
@@ -77,6 +79,44 @@ export const ActionButton = styled.button<{ active?: boolean }>`
 
   &:hover {
     background-color: #2c3e50;
+    border-color: #2c3e50;
     color: #fff;
   }
+`;
+
+export const FavoriteButton = styled.button<{ active?: boolean }>`
+  border: 2px solid ${({ active }) => (active ? "#f5a623" : "#ddd")};
+  background-color: ${({ active }) => (active ? "#fdf8ee" : "#fff")};
+  color: ${({ active }) => (active ? "#f5a623" : "#2c3e50")};
+  font-weight: ${({ active }) => (active ? "700" : "400")};
+  box-shadow: ${({ active }) => (active ? "0 0 0 3px rgba(245,166,35,0.15)" : "none")};
+
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #2c3e50;
+    border-color: #2c3e50;
+    color: #fff;
+  }
+`;
+
+export const CountLabel = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: #2c3e50;
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #f5f5f5;
 `;

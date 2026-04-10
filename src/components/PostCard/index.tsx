@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Card, Title, ContentPreview, Footer, ReadMore, Actions, ActionButton } from "./styles";
+import { Card, Title, ContentPreview, Footer, ReadMore, Actions, ActionButton, FavoriteButton, CountLabel } from "./styles";
 import type { Post } from "../../api/posts";
 import { api } from "../../api/api";
 
@@ -10,9 +10,12 @@ type Props = {
 
 export default function PostCard({ post, refreshPosts }: Props) {
     const navigate = useNavigate();
+    const role = JSON.parse(localStorage.getItem("role") || '"ALUNO"') as string;
+    const isProfessor = role === "PROFESSOR";
+    const currentUserId = Number(localStorage.getItem("userId"));
 
-    const isLiked = (post.likes?.length || 0) > 0;
-    const isFavorited = (post.favorites?.length || 0) > 0;
+    const isLiked = post.likes?.some((l) => l.userId === currentUserId) ?? false;
+    const isFavorited = post.favorites?.some((f) => f.userId === currentUserId) ?? false;
 
     const handleLike = async () => {
         const token = localStorage.getItem("token");
@@ -31,6 +34,7 @@ export default function PostCard({ post, refreshPosts }: Props) {
                 },
             }
         );
+        refreshPosts();
     };
 
     const handleFavorite = async () => {
@@ -50,13 +54,21 @@ export default function PostCard({ post, refreshPosts }: Props) {
             <p><strong>Disciplina:</strong> {post.subject}</p>
 
             <Actions>
-                <ActionButton active={isLiked} onClick={handleLike}>
-                    👍 {post._count?.likes || 0}
-                </ActionButton>
-
-                <ActionButton active={isFavorited} onClick={handleFavorite}>
-                    ⭐
-                </ActionButton>
+                {isProfessor ? (
+                    <>
+                        <CountLabel>👍 {post._count?.likes || 0}</CountLabel>
+                        <CountLabel>⭐ {post._count?.favorites || 0}</CountLabel>
+                    </>
+                ) : (
+                    <>
+                        <ActionButton active={isLiked} onClick={handleLike}>
+                            👍
+                        </ActionButton>
+                        <FavoriteButton active={isFavorited} onClick={handleFavorite}>
+                            ⭐
+                        </FavoriteButton>
+                    </>
+                )}
             </Actions>
 
             <Footer>

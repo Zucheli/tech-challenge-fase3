@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Home from "../pages/Home";
 import PostDetails from "../pages/PostDetails";
 import Login from "../pages/Login";
@@ -10,9 +10,12 @@ import { PrivateRoute } from "./PrivateRoute";
 export function AppRoutes() {
     return (
         <Routes>
+            {/* redireciona raiz para login */}
+            <Route path="/" element={<Navigate to="/login" replace />} />
+
             {/* públicas */}
-            <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/posts" element={<Home />} />
             <Route path="/posts/:id" element={<PostDetails />} />
 
             {/* protegidas */}
