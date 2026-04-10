@@ -16,6 +16,8 @@ Frontend da aplicação de gerenciamento de postagens educacionais, consumindo a
 - Dá like e favorita posts (toggle — clica de novo para desfazer)
 - Vê o estado visual do botão de like (azul) e favorito (dourado) quando já interagiu
 - Não vê a contagem numérica de likes e favoritos
+- Comenta em posts
+- Exclui os próprios comentários
 
 ### Role: PROFESSOR
 - Realiza login e acessa a área administrativa
@@ -24,6 +26,8 @@ Frontend da aplicação de gerenciamento de postagens educacionais, consumindo a
 - Vê a contagem numérica de likes e favoritos de cada post
 - Não pode dar like nem favoritar
 - Cria, edita e exclui posts
+- Comenta em posts
+- Exclui qualquer comentário
 - Realiza logout
 
 ---
@@ -48,13 +52,13 @@ tech-challenge-fase3/
 ├── src/
 │   ├── api/
 │   │   ├── api.ts          # Instância do Axios com interceptor de token
-│   │   └── posts.ts        # Funções de listagem e busca de posts
+│   │   └── posts.ts        # Tipos e funções de posts, comentários, like e favorito
 │   ├── components/
 │   │   ├── Header/         # Header com navegação e logout
 │   │   └── PostCard/       # Card de post com like/favorito por role
 │   ├── pages/
 │   │   ├── Home/           # Listagem com filtros e toggles de curtidos/favoritos
-│   │   ├── PostDetails/    # Detalhe do post com like/favorito por role
+│   │   ├── PostDetails/    # Detalhe do post com like/favorito por role e comentários
 │   │   ├── Login/          # Autenticação e extração do userId do JWT
 │   │   ├── Admin/          # Área administrativa (somente PROFESSOR)
 │   │   ├── CreatePost/     # Criação de post (somente PROFESSOR)
