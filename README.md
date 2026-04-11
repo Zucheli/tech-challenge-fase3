@@ -60,9 +60,12 @@ tech-challenge-fase3/
 │   │   ├── Home/           # Listagem com filtros e toggles de curtidos/favoritos
 │   │   ├── PostDetails/    # Detalhe do post com like/favorito por role e comentários
 │   │   ├── Login/          # Autenticação e extração do userId do JWT
-│   │   ├── Admin/          # Área administrativa (somente PROFESSOR)
+│   │   ├── Admin/          # Gerenciamento de posts (somente PROFESSOR)
 │   │   ├── CreatePost/     # Criação de post (somente PROFESSOR)
-│   │   └── EditPost/       # Edição de post (somente PROFESSOR)
+│   │   ├── EditPost/       # Edição de post (somente PROFESSOR)
+│   │   ├── Users/          # Listagem de usuários (somente PROFESSOR)
+│   │   ├── CreateUser/     # Criação de usuário (somente PROFESSOR)
+│   │   └── EditUser/       # Edição de usuário (somente PROFESSOR)
 │   ├── routes/
 │   │   ├── AppRoutes.tsx   # Definição de rotas públicas e protegidas
 │   │   └── PrivateRoute.tsx
@@ -88,9 +91,12 @@ tech-challenge-fase3/
 - `/posts/:id` → detalhe do post
 
 **Rotas Protegidas** (exigem token JWT)
-- `/admin` → área administrativa
+- `/admin` → gerenciamento de posts (link "Posts" no header)
 - `/create` → criar post
 - `/edit/:id` → editar post
+- `/users` → listagem de usuários
+- `/users/create` → criar usuário
+- `/users/edit/:id` → editar usuário
 
 O acesso às rotas protegidas é controlado por `PrivateRoute`, que valida a presença do token JWT no localStorage.
 

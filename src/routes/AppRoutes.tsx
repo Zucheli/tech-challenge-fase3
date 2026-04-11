@@ -5,6 +5,9 @@ import Login from "../pages/Login";
 import Admin from "../pages/Admin";
 import CreatePost from "../pages/CreatePost";
 import EditPost from "../pages/EditPost";
+import Users from "../pages/Users";
+import CreateUser from "../pages/CreateUser";
+import EditUser from "../pages/EditUser";
 import { PrivateRoute } from "./PrivateRoute";
 
 export function AppRoutes() {
@@ -42,6 +45,33 @@ export function AppRoutes() {
                 element={
                     <PrivateRoute>
                         <EditPost />
+                    </PrivateRoute>
+                }
+            />
+
+            <Route
+                path="/users"
+                element={
+                    <PrivateRoute>
+                        <Users />
+                    </PrivateRoute>
+                }
+            />
+
+            <Route
+                path="/users/create"
+                element={
+                    <PrivateRoute>
+                        <CreateUser />
+                    </PrivateRoute>
+                }
+            />
+
+            <Route
+                path="/users/edit/:id"
+                element={
+                    <PrivateRoute>
+                        <EditUser />
                     </PrivateRoute>
                 }
             />

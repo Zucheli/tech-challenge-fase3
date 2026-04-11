@@ -37,9 +37,14 @@ export default function Header() {
                     {isAuthenticated && (
                         <>
                             {isProfessor && (
-                                <Link to="/admin">
-                                    <NavLink>Admin</NavLink>
-                                </Link>
+                                <>
+                                    <Link to="/admin">
+                                        <NavLink>Posts</NavLink>
+                                    </Link>
+                                    <Link to="/users">
+                                        <NavLink>Usuários</NavLink>
+                                    </Link>
+                                </>
                             )}
 
                             <LogoutButton onClick={handleLogout}>

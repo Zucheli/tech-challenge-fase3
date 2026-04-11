@@ -45,3 +45,18 @@ export const Button = styled.button`
     opacity: 0.9;
   }
 `;
+
+export const CancelButton = styled.button`
+  align-self: flex-end;
+  padding: 10px 18px;
+  background-color: transparent;
+  color: #999;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    border-color: #2c3e50;
+    color: #2c3e50;
+  }
+`;

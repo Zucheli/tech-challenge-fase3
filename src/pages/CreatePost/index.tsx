@@ -8,6 +8,7 @@ import {
     Input,
     TextArea,
     Button,
+    CancelButton,
 } from "./styles";
 
 export default function CreatePost() {
@@ -76,6 +77,7 @@ export default function CreatePost() {
                     {["PROVA", "EXERCICIO", "RESUMO"].map((item) => (
                         <button
                             key={item}
+                            type="button"
                             onClick={() => setType(item)}
                             style={{
                                 padding: 8,
@@ -90,7 +92,10 @@ export default function CreatePost() {
                     ))}
                 </div>
 
-                <Button type="submit">Salvar</Button>
+                <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
+                    <CancelButton type="button" onClick={() => navigate("/admin")}>Cancelar</CancelButton>
+                    <Button type="submit">Salvar</Button>
+                </div>
             </Form>
         </Container>
     );
